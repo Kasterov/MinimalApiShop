@@ -2,7 +2,7 @@
 
 namespace MinimalApiShop.Requests.Validators;
 
-public class ProductChangeAtributeRequestValidator : AbstractValidator<ProductChangeAtribute>
+public class ProductChangeAtributeRequestValidator : AbstractValidator<ProductChangeAtributeRequest>
 {
     public ProductChangeAtributeRequestValidator()
     {

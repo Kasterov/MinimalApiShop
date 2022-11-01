@@ -1,4 +1,4 @@
 ﻿namespace MinimalApiShop.Requests;
 
-public sealed record ProductChangeAtribute(
+public sealed record ProductChangeAtributeRequest(
     string Atribute);

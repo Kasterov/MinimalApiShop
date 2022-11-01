@@ -68,7 +68,7 @@ public static class ProductShop
                 (InternetShopContext _shopContext,
                 [FromServices] IProductService _productService,
                 [FromRoute] int id,
-                [FromBody] ProductChangeAtribute request
+                [FromBody] ProductChangeAtributeRequest request
                 ) =>
             {
                 await _productService.ChangeProductAtribute(id, request.Atribute);
