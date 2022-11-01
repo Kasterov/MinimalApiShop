@@ -1,0 +1,49 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MinimalApiShop.Data;
+using MinimalApiShop.Models;
+using MinimalApiShop.Requests;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<InternetShopContext>(opt => opt
+.UseSqlServer(builder.Configuration
+.GetConnectionString("DefualtConnection")));
+
+var app = builder.Build();
+
+app.UseSwagger();
+
+app.MapGet("/api/Shop/products/{id}", () => "There will be realization!");
+
+app.MapGet("/api/Shop/products", () => "There will be realization!");
+
+app.MapPost("/api/Shop/products",
+    ([FromServices] InternetShopContext shopContext,
+    [FromBody] CreateProductRequest productRequest) =>
+    {
+        var product = new Product()
+        {
+            Name = productRequest.Name,
+            Category = productRequest.Category,
+            Atribute = productRequest.Atribute,
+            Quantity = productRequest.Quantity
+        };
+
+        shopContext.Products.Add(product);
+        shopContext.SaveChanges();
+    });
+
+app.MapPost("/api/Shop/product/{id}/attribute", () => "There will be realization!");
+
+app.MapPost("/apiShop/products/{id}quantity", () => "There will be realization!");
+
+app.MapPut("/api/Shop/product/{id}/attribute", () => "There will be realization!");
+
+app.MapDelete("/api/Shop/products/{id}", () => "There will be realization!");
+
+app.UseSwaggerUI();
+
+app.Run();
