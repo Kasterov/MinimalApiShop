@@ -1,4 +1,7 @@
-﻿namespace MinimalApiShop.Middleware;
+﻿using MinimalApiShop.Extensions;
+using static Microsoft.AspNetCore.Http.StatusCodes;
+
+namespace MinimalApiShop.Middleware;
 
 public class ErrorHandlerMiddleware
 {
