@@ -37,9 +37,12 @@ public static class ProductShop
             async
                 (InternetShopContext _shopContext,
                 [FromServices] IProductService _productService,
-                [FromBody] ProductCreateRequest productRequest) =>
+                [FromServices] IValidator<ProductCreateRequest> _validator,
+                [FromBody] ProductCreateRequest request) =>
             {
-                await _productService.AddProduct(productRequest);
+                await _validator.ValidateAndThrowAsync(request);
+                await _productService.AddProduct(request);
+
                 return Results.Ok(new ResultResponse("Product is added to DataBase!"));
             });
 

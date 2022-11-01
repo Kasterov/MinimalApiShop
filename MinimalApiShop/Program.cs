@@ -1,12 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinimalApiShop.Configuration;
 using MinimalApiShop.Data;
 using MinimalApiShop.Endpoints;
-using MinimalApiShop.Models;
-using MinimalApiShop.Requests;
-using MinimalApiShop.Responses;
-using MinimalApiShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
