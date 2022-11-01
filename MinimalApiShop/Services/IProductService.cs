@@ -5,7 +5,7 @@ namespace MinimalApiShop.Services;
 
 public interface IProductService
 {
-    Task AddProduct(CreateProductRequest productCreateRequest);
+    Task AddProduct(ProductCreateRequest productCreateRequest);
     Task DeleteProduct(int id);
     Task AddQuantityProduct(int id, int quantity);
     Task ChangeProductAtribute(int id, string atribute);

@@ -2,7 +2,7 @@
 
 namespace MinimalApiShop.Requests;
 
-public sealed record CreateProductRequest(
+public sealed record ProductCreateRequest(
     string Name,
     Category Category,
     string? Atribute,

@@ -13,7 +13,7 @@ public class ProductService : IProductService
         _shopDbContext = shopDbContext;
     }
 
-    public async Task AddProduct(CreateProductRequest productRequest)
+    public async Task AddProduct(ProductCreateRequest productRequest)
     {
         var product = new Product()
         {

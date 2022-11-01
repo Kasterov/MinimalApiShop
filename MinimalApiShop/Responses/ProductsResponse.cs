@@ -2,5 +2,5 @@
 
 namespace MinimalApiShop.Responses;
 
-public sealed record ProductResponse(
-    Product Product);
+public sealed record ProductsResponse(
+    List<Product> List);
