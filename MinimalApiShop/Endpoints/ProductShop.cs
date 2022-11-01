@@ -55,9 +55,9 @@ public static class ProductShop
                 [FromRoute] int id) =>
             {
                 await _validator.ValidateAsync(request);
-                await _productService.ChangeProductAtribute(id, request.Atribute);
+                await _productService.AddProductAtribute(id, request.Atribute);
 
-                return Results.Ok(new ResultResponse("Attribute is changed!"));
+                return Results.Ok(new ResultResponse("Attribute is added!"));
             });
 
         app.MapPost("/apiShop/products/{id}/quantity",
