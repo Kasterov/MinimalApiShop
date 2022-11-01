@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using MinimalApiShop.Data;
 using MinimalApiShop.Models;
 using MinimalApiShop.Requests;
@@ -18,6 +19,7 @@ public static class ProductShop
         [FromRoute] int id) =>
     {
         var product = await _productService.GetProductById(id);
+
         return Results.Ok(new ProductResponse(product));
     });
 
@@ -45,10 +47,13 @@ public static class ProductShop
             async
                 (InternetShopContext _shopContext,
                 [FromServices] IProductService _productService,
+                [FromServices] IValidator<ProductAddAtributeRequest> _validator,
                 [FromBody] ProductAddAtributeRequest request,
                 [FromRoute] int id) =>
             {
+                await _validator.ValidateAsync(request);
                 await _productService.ChangeProductAtribute(id, request.Atribute);
+
                 return Results.Ok(new ResultResponse("Attribute is changed!"));
             });
 
@@ -56,10 +61,13 @@ public static class ProductShop
             async
                 (InternetShopContext _shopContext,
                 [FromServices] IProductService _productService,
+                [FromServices] IValidator<ProductAddQuantityRequest> _validator,
                 [FromRoute] int id,
                 [FromBody] ProductAddQuantityRequest request) =>
             {
+                await _validator.ValidateAsync(request);
                 await _productService.AddQuantityProduct(id, request.Quantity);
+
                 return Results.Ok(new ResultResponse("Quantity is changed!"));
             });
 
@@ -67,11 +75,14 @@ public static class ProductShop
             async
                 (InternetShopContext _shopContext,
                 [FromServices] IProductService _productService,
+                [FromServices] IValidator<ProductChangeAtributeRequest> _validator,
                 [FromRoute] int id,
                 [FromBody] ProductChangeAtributeRequest request
                 ) =>
             {
+                await _validator.ValidateAsync(request);
                 await _productService.ChangeProductAtribute(id, request.Atribute);
+
                 return Results.Ok(new ResultResponse("Atribute is changed!"));
             });
 
@@ -82,6 +93,7 @@ public static class ProductShop
                 [FromRoute] int id) =>
             {
                 await _productService.DeleteProduct(id);
+
                 return Results.Ok(new ResultResponse($"Product with id: {id} deleted!!"));
             });
     }
