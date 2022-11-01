@@ -10,6 +10,6 @@ public interface IProductService
     Task AddQuantityProduct(int id, int quantity);
     Task ChangeProductAtribute(int id, string atribute);
     Task AddProductAtribute(int id, string atribute);
-    Task<IEnumerable<Product>> GetProductsByCategory(Category category);
+    Task<List<Product>> GetProductsByCategory(Category category);
     Task<Product> GetProductById(int id);
 }
