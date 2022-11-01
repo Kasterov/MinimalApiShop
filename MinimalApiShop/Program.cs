@@ -25,16 +25,7 @@ app.MapPost("/api/Shop/products",
     ([FromServices] InternetShopContext shopContext,
     [FromBody] CreateProductRequest productRequest) =>
     {
-        var product = new Product()
-        {
-            Name = productRequest.Name,
-            Category = productRequest.Category,
-            Atribute = productRequest.Atribute,
-            Quantity = productRequest.Quantity
-        };
-
-        await shopContext.Products.AddAsync(product);
-        await shopContext.SaveChangesAsync();
+       
     });
 
 app.MapPost("/api/Shop/product/{id}/attribute", () => "There will be realization!");
