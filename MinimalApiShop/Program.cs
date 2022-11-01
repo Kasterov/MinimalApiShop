@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MinimalApiShop.Configuration;
 using MinimalApiShop.Data;
 using MinimalApiShop.Endpoints;
+using MinimalApiShop.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +15,11 @@ builder.Services.AddDbContext<InternetShopContext>(opt => opt
 
 var app = builder.Build();
 
-app.UseSwagger();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseProductShopEndpoints();
 
+app.UseSwagger();
 app.UseSwaggerUI();
 
 app.Run();
