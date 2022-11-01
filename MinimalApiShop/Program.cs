@@ -21,6 +21,7 @@ app.MapGet("/api/Shop/products/{id}", () => "There will be realization!");
 app.MapGet("/api/Shop/products", () => "There will be realization!");
 
 app.MapPost("/api/Shop/products",
+    async
     ([FromServices] InternetShopContext shopContext,
     [FromBody] CreateProductRequest productRequest) =>
     {
@@ -32,8 +33,8 @@ app.MapPost("/api/Shop/products",
             Quantity = productRequest.Quantity
         };
 
-        shopContext.Products.Add(product);
-        shopContext.SaveChanges();
+        await shopContext.Products.AddAsync(product);
+        await shopContext.SaveChangesAsync();
     });
 
 app.MapPost("/api/Shop/product/{id}/attribute", () => "There will be realization!");
