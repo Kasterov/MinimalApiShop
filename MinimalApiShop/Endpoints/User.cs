@@ -10,9 +10,16 @@ public static class User
     {
         app.MapPost("/api/user",  
                 ([FromServices] IUserService _userService,
-                CreateUserRequest request) =>
+                UserRequest request) =>
         {
             return _userService.Registration(request);
         }).WithTags("User");
+
+        app.MapPost("/api/user/login",
+                ([FromServices] IUserService _userService,
+                UserRequest request) =>
+                {
+                    return _userService.Login(request);
+                }).WithTags("User");
     }
 }
