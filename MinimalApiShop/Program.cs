@@ -18,6 +18,7 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseProductShopEndpoints();
+app.UseUserEndpoints();
 
 app.UseSwagger();
 app.UseSwaggerUI();

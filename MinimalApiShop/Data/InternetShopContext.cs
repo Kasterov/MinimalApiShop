@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MinimalApiShop.Models;
+using MinimalApiShop.Models.Products;
 
 namespace MinimalApiShop.Data
 {

@@ -1,4 +1,4 @@
-﻿namespace MinimalApiShop.Requests;
+﻿namespace MinimalApiShop.Requests.Products;
 
 public sealed record ProductAddAtributeRequest(
     string Atribute);

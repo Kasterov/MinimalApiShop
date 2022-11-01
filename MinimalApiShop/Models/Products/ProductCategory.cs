@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinimalApiShop.Models;
+namespace MinimalApiShop.Models.Products;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Category

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MinimalApiShop.Models
+namespace MinimalApiShop.Models.Products
 {
     public partial class Product
     {

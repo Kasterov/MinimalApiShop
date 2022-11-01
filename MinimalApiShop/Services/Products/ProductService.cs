@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MinimalApiShop.Data;
-using MinimalApiShop.Models;
-using MinimalApiShop.Requests;
+using MinimalApiShop.Models.Products;
+using MinimalApiShop.Requests.Products;
 
-namespace MinimalApiShop.Services;
+namespace MinimalApiShop.Services.Products;
 
 public class ProductService : IProductService
 {

@@ -1,6 +1,7 @@
 ﻿using MinimalApiShop.Requests.Validators;
-using MinimalApiShop.Services;
 using FluentValidation;
+using MinimalApiShop.Services.Products;
+using MinimalApiShop.Services.Users;
 
 namespace MinimalApiShop.Configuration;
 
@@ -9,6 +10,7 @@ public static class ServiceCollectionExtensions
     public static void ConfigureService(this IServiceCollection service)
     {
         service.AddSingleton<IProductService, ProductService>()
-               .AddValidatorsFromAssemblyContaining<ProductValidator>(ServiceLifetime.Singleton);
+               .AddValidatorsFromAssemblyContaining<ProductValidator>(ServiceLifetime.Singleton)
+               .AddSingleton<IUserService, UserService>();
     }
 }

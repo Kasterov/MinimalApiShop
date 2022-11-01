@@ -1,10 +1,10 @@
-﻿using MinimalApiShop.Models;
+﻿using MinimalApiShop.Models.Products;
 
-namespace MinimalApiShop.Requests;
+namespace MinimalApiShop.Requests.Products;
 
 public sealed record ProductCreateRequest(
     string Name,
     Category Category,
-    string? Atribute,
+    string Atribute,
     int Quantity
     );

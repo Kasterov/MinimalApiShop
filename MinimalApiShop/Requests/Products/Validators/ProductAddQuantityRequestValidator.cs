@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MinimalApiShop.Requests.Products;
 
 namespace MinimalApiShop.Requests.Validators;
 
