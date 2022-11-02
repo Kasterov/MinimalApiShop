@@ -1,21 +1,27 @@
-﻿using MinimalApiShop.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using MinimalApiShop.Data;
 using MinimalApiShop.Models.Users;
 using MinimalApiShop.Requests.Users;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace MinimalApiShop.Services.Users;
 
 public class UserService : IUserService
 {
-    
+    private readonly IConfiguration _configuration;
     private readonly InternetShopContext _shopContext;
 
-    public UserService(InternetShopContext shopContext)
+    public UserService(InternetShopContext shopContext, IConfiguration configuration)
     {
         _shopContext = shopContext;
+        _configuration = configuration;
     }
 
-    public User Registration(UserRequest request)
+    public async Task Registration(UserRequest request)
     {
         GeneratePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -26,32 +32,69 @@ public class UserService : IUserService
             PasswordSalt = passwordSalt
         };
 
-        _shopContext.Users.Add(user);
-        _shopContext.SaveChanges();
-        return user;
+        await _shopContext.Users.AddAsync(user);
+        await _shopContext.SaveChangesAsync();
     }
 
-    public bool Login(UserRequest request)
+    public async Task<string> Login(UserRequest request)
     {
-        return true;
+        var user = await _shopContext.Users
+            .FirstOrDefaultAsync(x => x.Name == request.Name);
+
+        if (user is null)
+        {
+            throw new InvalidDataException("No user with such name!");
+        }
+
+        if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+        {
+            throw new InvalidDataException("Wrong password!");
+        }
+
+        return CreateJwtToken(user);
     }
 
     private void GeneratePasswordHash(string password,out byte[] passwordHash,out byte[] passwordSalt)
     {
-        using (var hmasha = new HMACSHA512())
+        using (var hmacsha = new HMACSHA512())
         {
-            passwordSalt = hmasha.Key;
-            passwordHash = hmasha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            passwordSalt = hmacsha.Key;
+            passwordHash = hmacsha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
     }
 
     private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
     {
-        using (var hmasha = new HMACSHA512(passwordSalt))
+        using (var hmacsha = new HMACSHA512(passwordSalt))
         {
-            var computeHash = hmasha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            var computeHash = hmacsha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
             return computeHash.SequenceEqual(passwordHash);
         }
+    }
+
+    private string CreateJwtToken(User user)
+    {
+        List<Claim> calims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Name)
+        };
+
+        var key = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8
+            .GetBytes(_configuration
+            .GetSection("AppSettings:Token").Value));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken(
+            claims: calims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: creds
+            );
+
+        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return jwtToken;
     }
 }

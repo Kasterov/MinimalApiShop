@@ -5,6 +5,6 @@ namespace MinimalApiShop.Services.Users;
 
 public interface IUserService
 {
-    public User Registration(UserRequest request);
-    public bool Login(UserRequest request);
+    Task Registration(UserRequest request);
+    Task<string> Login(UserRequest request);
 }

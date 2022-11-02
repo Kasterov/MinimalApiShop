@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MinimalApiShop.Requests.Users;
+using MinimalApiShop.Responses;
 using MinimalApiShop.Services.Users;
 
 namespace MinimalApiShop.Endpoints;
@@ -8,18 +9,19 @@ public static class User
 {
     public static void UseUserEndpoints(this WebApplication app)
     {
-        app.MapPost("/api/user",  
-                ([FromServices] IUserService _userService,
-                UserRequest request) =>
+        app.MapPost("/api/user", async
+        ([FromServices] IUserService _userService,
+        UserRequest request) =>
         {
-            return _userService.Registration(request);
+            await _userService.Registration(request);
+            return Results.Ok(new UserResponse("User registered!"));
         }).WithTags("User");
 
-        app.MapPost("/api/user/login",
-                ([FromServices] IUserService _userService,
-                UserRequest request) =>
-                {
-                    return _userService.Login(request);
-                }).WithTags("User");
+        app.MapPost("/api/user/login", async
+        ([FromServices] IUserService _userService,
+        UserRequest request) =>
+        {
+            return await _userService.Login(request);
+        }).WithTags("User");
     }
 }
