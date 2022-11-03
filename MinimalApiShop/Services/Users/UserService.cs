@@ -23,6 +23,11 @@ public class UserService : IUserService
 
     public async Task Registration(UserRequest request)
     {
+        if (_shopContext.Users.Any(x => x.Name == request.Name))
+        {
+            throw new InvalidDataException("User with such name already exist!");
+        }
+
         GeneratePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
         var user = new User()
@@ -89,7 +94,7 @@ public class UserService : IUserService
 
         var token = new JwtSecurityToken(
             claims: calims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddMinutes(1),
             signingCredentials: creds
             );
 
