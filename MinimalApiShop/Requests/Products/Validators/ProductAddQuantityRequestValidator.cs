@@ -8,7 +8,7 @@ public class ProductaddQuantityRequestValidator : AbstractValidator<ProductAddQu
     public ProductaddQuantityRequestValidator()
     {
         RuleFor(x => x.Quantity)
-            .GreaterThan(0).
-            WithMessage("Quantity have to be grater than 0!");
+            .GreaterThan(0)
+            .WithMessage("Quantity have to be grater than 0!");
     }
 }

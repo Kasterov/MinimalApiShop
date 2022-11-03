@@ -22,7 +22,7 @@ public static class ProductEndpoints
                 return Results.Ok(new ProductResponse(product));
             })
             .WithTags("Shop")
-            .RequireAuthorization("Admin");
+            .RequireAuthorization("");
 
         app.MapGet("/api/Shop/products", async
            (InternetShopContext _shopContext,
