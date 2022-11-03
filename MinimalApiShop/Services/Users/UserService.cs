@@ -23,7 +23,7 @@ public class UserService : IUserService
 
     public async Task Registration(UserRequest request)
     {
-        if (_shopContext.Users.Any(x => x.Name == request.Name))
+        if (await IsUserExist(request.Name))
         {
             throw new InvalidDataException("User with such name already exist!");
         }
@@ -34,7 +34,8 @@ public class UserService : IUserService
         {
             Name = request.Name,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
+            Role = UserRole.User
         };
 
         await _shopContext.Users.AddAsync(user);
@@ -82,7 +83,8 @@ public class UserService : IUserService
     {
         List<Claim> calims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Name)
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -101,5 +103,15 @@ public class UserService : IUserService
         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
         return jwtToken;
+    }
+
+    private async Task<bool> IsUserExist(string name)
+    {
+        if (await _shopContext.Users.AnyAsync(x => x.Name == name))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -5,7 +5,7 @@ using MinimalApiShop.Services.Users;
 
 namespace MinimalApiShop.Endpoints;
 
-public static class User
+public static class UserEdpoints
 {
     public static void UseUserEndpoints(this WebApplication app)
     {
