@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MinimalApiShop.Data;
 using MinimalApiShop.Models.Users;
 using MinimalApiShop.Requests.Users;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace MinimalApiShop.Services.Users;
@@ -14,11 +11,16 @@ public class UserService : IUserService
 {
     private readonly IJwtGenerator _jwtGenerator;
     private readonly InternetShopContext _shopContext;
+    private readonly IVerifyPasswordService _verifyPasswordService;
 
-    public UserService(InternetShopContext shopContext, IJwtGenerator jwtGenerator)
+    public UserService(
+        InternetShopContext shopContext,
+        IJwtGenerator jwtGenerator,
+        IVerifyPasswordService verifyPasswordService)
     {
         _shopContext = shopContext;
         _jwtGenerator = jwtGenerator;
+        _verifyPasswordService = verifyPasswordService;
     }
 
     public async Task Registration(UserRequest request)
@@ -52,7 +54,7 @@ public class UserService : IUserService
             throw new InvalidDataException("No user with such name!");
         }
 
-        if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+        if (!_verifyPasswordService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
         {
             throw new InvalidDataException("Wrong password!");
         }
@@ -66,16 +68,6 @@ public class UserService : IUserService
         {
             passwordSalt = hmacsha.Key;
             passwordHash = hmacsha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-    }
-
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmacsha = new HMACSHA512(passwordSalt))
-        {
-            var computeHash = hmacsha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-
-            return computeHash.SequenceEqual(passwordHash);
         }
     }
 

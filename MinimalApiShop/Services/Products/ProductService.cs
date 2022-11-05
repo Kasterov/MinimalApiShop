@@ -73,6 +73,7 @@ public class ProductService : IProductService
         }
 
         product.Atribute = atribute;
+
         await _shopDbContext.SaveChangesAsync();
     }
 
@@ -84,6 +85,7 @@ public class ProductService : IProductService
         }
 
         var product = await GetProduct(id);
+
         _shopDbContext.Products.Remove(product);
         await _shopDbContext.SaveChangesAsync();
     }
