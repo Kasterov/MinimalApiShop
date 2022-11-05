@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         service.AddSingleton<IProductService, ProductService>()
                .AddValidatorsFromAssemblyContaining<ProductValidator>(ServiceLifetime.Singleton)
+               .AddSingleton<IJwtGenerator, JwtGenerator>()
                .AddSingleton<IUserService, UserService>();
     }
 }

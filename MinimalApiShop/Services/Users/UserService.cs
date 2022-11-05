@@ -12,13 +12,13 @@ namespace MinimalApiShop.Services.Users;
 
 public class UserService : IUserService
 {
-    private readonly IConfiguration _configuration;
+    private readonly IJwtGenerator _jwtGenerator;
     private readonly InternetShopContext _shopContext;
 
-    public UserService(InternetShopContext shopContext, IConfiguration configuration)
+    public UserService(InternetShopContext shopContext, IJwtGenerator jwtGenerator)
     {
         _shopContext = shopContext;
-        _configuration = configuration;
+        _jwtGenerator = jwtGenerator;
     }
 
     public async Task Registration(UserRequest request)
@@ -57,7 +57,7 @@ public class UserService : IUserService
             throw new InvalidDataException("Wrong password!");
         }
 
-        return CreateJwtToken(user);
+        return _jwtGenerator.GenerateJwtToken(user);
     }
 
     private void GeneratePasswordHash(string password,out byte[] passwordHash,out byte[] passwordSalt)
@@ -77,32 +77,6 @@ public class UserService : IUserService
 
             return computeHash.SequenceEqual(passwordHash);
         }
-    }
-
-    private string CreateJwtToken(User user)
-    {
-        List<Claim> calims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
-
-        var key = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8
-            .GetBytes(_configuration
-            .GetSection("AppSettings:Token").Value));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var token = new JwtSecurityToken(
-            claims: calims,
-            expires: DateTime.Now.AddMinutes(1),
-            signingCredentials: creds
-            );
-
-        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return jwtToken;
     }
 
     private async Task<bool> IsUserExist(string name)

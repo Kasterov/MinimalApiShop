@@ -3,11 +3,11 @@ using MinimalApiShop.Requests.Users;
 using MinimalApiShop.Responses;
 using MinimalApiShop.Services.Users;
 
-namespace MinimalApiShop.Endpoints;
+namespace MinimalApiShop.Endpoints.UserEndpoints;
 
-public static class UserEdpoints
+public static class AddUser
 {
-    public static void UseUserEndpoints(this WebApplication app)
+    public static void AddUserEndpoint(this WebApplication app)
     {
         app.MapPost("/api/user", async
         ([FromServices] IUserService _userService,
@@ -15,13 +15,6 @@ public static class UserEdpoints
         {
             await _userService.Registration(request);
             return Results.Ok(new UserResponse("User registered!"));
-        }).WithTags("User");
-
-        app.MapPost("/api/user/login", async
-        ([FromServices] IUserService _userService,
-        UserRequest request) =>
-        {
-            return await _userService.Login(request);
         }).WithTags("User");
     }
 }
