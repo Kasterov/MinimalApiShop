@@ -21,12 +21,12 @@ public static class AddOrder
     {
         app.MapPost("/api/Shop/order", [Authorize(Roles = "User")] async
            ([FromServices] IOrderService _orderService,
+           [FromServices] IValidator<AddToOrderRequest> _validator,
            [FromBody] AddToOrderRequest request) =>
         {
+            await _validator.ValidateAndThrowAsync(request);
             await _orderService.AddToOrder(request);
-
             return Results.Ok(new ResultResponse("Product added to your order!"));
-
         }).WithTags("Order");
     }
 }
