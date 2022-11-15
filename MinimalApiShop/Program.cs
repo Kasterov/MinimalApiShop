@@ -1,5 +1,6 @@
 using MinimalApiShop.Configuration;
 using MinimalApiShop.Endpoints;
+using MinimalApiShop.Endpoints.OrderEndpoints;
 using MinimalApiShop.Endpoints.ProductEndpoints;
 using MinimalApiShop.Endpoints.UserEndpoints;
 using MinimalApiShop.Middleware;
@@ -29,6 +30,8 @@ app.AddProductAtributeEndpoint();
 app.ChangeAtributeProductEndpoint();
 app.ChangeQuantityProductEndpont();
 app.DeleteProductEndpoint();
+
+app.AddOrderEndpoint();
 
 app.AddUserEndpoint();
 app.LoginUserEndpoint();

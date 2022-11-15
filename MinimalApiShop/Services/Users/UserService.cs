@@ -3,6 +3,7 @@ using MinimalApiShop.Data;
 using MinimalApiShop.Models.Users;
 using MinimalApiShop.Requests.Users;
 using System;
+using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace MinimalApiShop.Services.Users;

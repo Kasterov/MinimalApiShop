@@ -35,6 +35,12 @@ public class ErrorHandlerMiddleware
                 .WithStatusCode(Status400BadRequest)
                 .WithJsonContent(ex.Message);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            await content.Response
+                .WithStatusCode(Status203NonAuthoritative)
+                .WithJsonContent(ex.Message);
+        }
         catch (Exception ex)
         {
             await content.Response

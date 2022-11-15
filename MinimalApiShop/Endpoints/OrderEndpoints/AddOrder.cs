@@ -3,29 +3,29 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinimalApiShop.Data;
+using MinimalApiShop.Models.Orders;
+using MinimalApiShop.Requests.Orders;
 using MinimalApiShop.Requests.Products;
 using MinimalApiShop.Responses;
+using MinimalApiShop.Services.Orders;
 using MinimalApiShop.Services.Products;
+using MinimalApiShop.Services.Users;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace MinimalApiShop.Endpoints.ProductEndpoints;
+namespace MinimalApiShop.Endpoints.OrderEndpoints;
 
 public static class AddOrder
 {
     public static void AddOrderEndpoint(this WebApplication app)
     {
         app.MapPost("/api/Shop/order", [Authorize(Roles = "User")] async
-           (InternetShopContext _shopContext,
-           [FromServices] IProductService _productService,
-           int id) =>
+           ([FromServices] IOrderService _orderService,
+           [FromBody] AddToOrderRequest request) =>
         {
-            var product = await _productService.GetProductById(id);
-            var user = _shopContext.Users.FirstOrDefaultAsync(x => x.Name == ClaimTypes.Name);
+            await _orderService.AddToOrder(request);
 
-            if (user is null)
-            {
-                throw new UnauthorizedAccessException();
-            }
+            return Results.Ok(new ResultResponse("Product added to your order!"));
 
         }).WithTags("Order");
     }
