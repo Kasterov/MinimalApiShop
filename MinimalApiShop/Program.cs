@@ -34,6 +34,7 @@ app.DeleteProductEndpoint();
 app.AddOrderEndpoint();
 app.DeleteFromOrderEndpoint();
 app.GetOrdersEndpoint();
+app.PurchaseOrderEndpoint();
 
 app.AddUserEndpoint();
 app.LoginUserEndpoint();

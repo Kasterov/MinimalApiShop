@@ -71,7 +71,7 @@ public class OrderService : IOrderService
     {
         var orders = await GetAllOrders();
 
-        if (orders.Any())
+        if (!orders.Any())
         {
             throw new InvalidDataException("Your order list is empty!");
         }
@@ -82,7 +82,7 @@ public class OrderService : IOrderService
 
             if (order.Quantity > productInOrder.Quantity)
             {
-                throw new InvalidOperationException($"Amount of {productInOrder.Name} is lesser than you required!");
+                throw new InvalidOperationException($"Amount of {productInOrder.Name} with id  {productInOrder.Id} is lesser than you required!");
             }
 
             productInOrder.Quantity -= order.Quantity;
