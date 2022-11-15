@@ -3,7 +3,7 @@ using MinimalApiShop.Requests.Orders;
 
 namespace MinimalApiShop.Requests.Products.Validators;
 
-public class AddToOrderRequestValidator : AbstractValidator<AddToOrderRequest>
+public class AddToOrderRequestValidator : AbstractValidator<OrderRequest>
 {
     public AddToOrderRequestValidator()
     {

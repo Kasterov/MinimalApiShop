@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MinimalApiShop.Data;
 using MinimalApiShop.Requests.Products;
 using MinimalApiShop.Responses;
 using MinimalApiShop.Services.Products;
@@ -13,8 +12,7 @@ public static class ChangeAtrbuteProduct
     public static void ChangeAtributeProductEndpoint(this WebApplication app)
     {
         app.MapPut("/api/Shop/product/{id}/attribute", [Authorize(Roles = "Admin, User")] async
-            (InternetShopContext _shopContext,
-            [FromServices] IProductService _productService,
+            ([FromServices] IProductService _productService,
             [FromServices] IValidator<ProductChangeAtributeRequest> _validator,
             [FromRoute] int id,
             [FromBody] ProductChangeAtributeRequest request) =>

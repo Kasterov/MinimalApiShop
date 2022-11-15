@@ -32,6 +32,7 @@ app.ChangeQuantityProductEndpont();
 app.DeleteProductEndpoint();
 
 app.AddOrderEndpoint();
+app.DeleteFromOrderEndpoint();
 
 app.AddUserEndpoint();
 app.LoginUserEndpoint();

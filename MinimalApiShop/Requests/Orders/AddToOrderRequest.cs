@@ -1,5 +1,5 @@
 ﻿namespace MinimalApiShop.Requests.Orders;
 
-public sealed record AddToOrderRequest(
+public sealed record OrderRequest(
     int ProductId,
     int Quantity);

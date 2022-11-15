@@ -17,7 +17,7 @@ public class OrderService : IOrderService
         _identity = identity;
     }
 
-    public async Task AddToOrder(AddToOrderRequest request)
+    public async Task AddToOrder(OrderRequest request)
     {
         if (!await IsProductExist(request.ProductId))
         {
@@ -39,6 +39,32 @@ public class OrderService : IOrderService
         await _shopDbContext.SaveChangesAsync();
     }
 
+    public async Task DeleteFromOrder(int productId)
+    {
+        if (!await IsProductInOrder(productId))
+        {
+            throw new ArgumentOutOfRangeException("No product with such id in your order!");
+        }
+
+        var order = await GetOrderByProductId(productId);
+        var productFromOrder = await GetProduct(productId);
+
+        productFromOrder.Quantity += order.Quantity;
+
+        _shopDbContext.Orders.Remove(order);
+        await _shopDbContext.SaveChangesAsync();
+    }
+
+    public Task ChangeOrder(OrderRequest request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task PurchaseOrder(int orderId)
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task<bool> IsProductExist(int id) =>
         await _shopDbContext.Products
             .AnyAsync(x => x.Id == id);
@@ -46,6 +72,12 @@ public class OrderService : IOrderService
     private async Task<Product> GetProduct(int id) =>
        await _shopDbContext.Products
             .SingleAsync(x => x.Id == id);
+
+    private async Task<Order?> GetOrderByProductId(int id)
+    {
+        return await _shopDbContext.Orders
+            .FirstOrDefaultAsync(x => x.ProductId == id && x.UserId == Convert.ToInt32(_identity.UserId));
+    }
 
     private async Task DecreaseQuantity(int id, int quantity)
     {
@@ -57,5 +89,11 @@ public class OrderService : IOrderService
         }
 
         product.Quantity -= quantity;
+    }
+
+    private async Task<bool> IsProductInOrder(int id)
+    {
+        return await _shopDbContext.Orders.AnyAsync(x => 
+        x.ProductId == id && x.UserId == Convert.ToInt32(_identity.UserId));
     }
 }
