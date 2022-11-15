@@ -30,6 +30,7 @@ public class OrderService : IOrderService
         {
             UserId = userId,
             ProductId = request.ProductId,
+            Quantity = request.Quantity
         };
 
         await DecreaseQuantity(request.ProductId, request.Quantity);
