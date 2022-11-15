@@ -33,6 +33,7 @@ app.DeleteProductEndpoint();
 
 app.AddOrderEndpoint();
 app.DeleteFromOrderEndpoint();
+app.GetOrdersEndpoint();
 
 app.AddUserEndpoint();
 app.LoginUserEndpoint();

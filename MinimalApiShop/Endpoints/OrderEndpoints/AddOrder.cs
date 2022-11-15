@@ -17,7 +17,7 @@ public static class AddOrder
            [FromBody] OrderRequest request) =>
         {
             await _validator.ValidateAndThrowAsync(request);
-            await _orderService.AddToOrder(request);
+            await _orderService.AddToOrders(request);
             return Results.Ok(new ResultResponse("Product added to your order!"));
         }).WithTags("Order");
     }

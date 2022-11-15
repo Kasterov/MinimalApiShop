@@ -110,7 +110,8 @@ public class ProductService : IProductService
                 Id = x.Id,
                 Name = x.Name,
                 Category = x.Category,
-                Atribute = x.Atribute
+                Atribute = x.Atribute,
+                Quantity = x.Quantity
             })
             .ToListAsync();
 

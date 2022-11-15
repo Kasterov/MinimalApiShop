@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MinimalApiShop.Responses;
 using MinimalApiShop.Services.Orders;
 
 namespace MinimalApiShop.Endpoints.OrderEndpoints;
@@ -13,6 +14,7 @@ public static class DeleteFromOrder
             [FromRoute]int id) =>
         {
             await _orderService.DeleteFromOrder(id);
+            return Results.Ok(new ResultResponse($"You order with id {id} deleted from list of orders!"));
         }).WithTags("Order");
     }
 }

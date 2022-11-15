@@ -17,11 +17,16 @@ public class OrderService : IOrderService
         _identity = identity;
     }
 
-    public async Task AddToOrder(OrderRequest request)
+    public async Task AddToOrders(OrderRequest request)
     {
         if (!await IsProductExist(request.ProductId))
         {
             throw new ArgumentOutOfRangeException("No product with such id!");
+        }
+
+        if (await IsProductInOrder(request.ProductId))
+        {
+            throw new InvalidDataException("Such order already created! You can delete it or change!");
         }
 
         int userId = Convert.ToInt32(_identity.UserId);
@@ -32,8 +37,6 @@ public class OrderService : IOrderService
             ProductId = request.ProductId,
             Quantity = request.Quantity
         };
-
-        await DecreaseQuantity(request.ProductId, request.Quantity);
 
         await _shopDbContext.Orders.AddAsync(order);
         await _shopDbContext.SaveChangesAsync();
@@ -47,9 +50,6 @@ public class OrderService : IOrderService
         }
 
         var order = await GetOrderByProductId(productId);
-        var productFromOrder = await GetProduct(productId);
-
-        productFromOrder.Quantity += order.Quantity;
 
         _shopDbContext.Orders.Remove(order);
         await _shopDbContext.SaveChangesAsync();
@@ -60,9 +60,36 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    public Task PurchaseOrder(int orderId)
+    public async Task<IEnumerable<Order>> GetAllOrders()
     {
-        throw new NotImplementedException();
+        return await _shopDbContext.Orders.Where(x => 
+        x.UserId == Convert.ToInt32(_identity.UserId))
+        .ToListAsync();
+    }
+
+    public async Task PurchaseOrders()
+    {
+        var orders = await GetAllOrders();
+
+        if (orders.Any())
+        {
+            throw new InvalidDataException("Your order list is empty!");
+        }
+
+        foreach (var order in orders)
+        {
+            var productInOrder = await GetProduct(order.ProductId);
+
+            if (order.Quantity > productInOrder.Quantity)
+            {
+                throw new InvalidOperationException($"Amount of {productInOrder.Name} is lesser than you required!");
+            }
+
+            productInOrder.Quantity -= order.Quantity;
+        }
+
+        _shopDbContext.Orders.RemoveRange(orders);
+        await _shopDbContext.SaveChangesAsync();
     }
 
     private async Task<bool> IsProductExist(int id) =>

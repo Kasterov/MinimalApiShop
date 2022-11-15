@@ -41,6 +41,12 @@ public class ErrorHandlerMiddleware
                 .WithStatusCode(Status203NonAuthoritative)
                 .WithJsonContent(ex.Message);
         }
+        catch (InvalidOperationException ex)
+        {
+            await content.Response
+                .WithStatusCode(Status403Forbidden)
+                .WithJsonContent(ex.Message);
+        }
         catch (Exception ex)
         {
             await content.Response
