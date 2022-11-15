@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MinimalApiShop.Data;
 using MinimalApiShop.Models.Orders;
+using MinimalApiShop.Models.Products;
 using MinimalApiShop.Requests.Orders;
 using MinimalApiShop.Services.Users;
 
@@ -31,11 +32,29 @@ public class OrderService : IOrderService
             ProductId = request.ProductId,
         };
 
+        await DecreaseQuantity(request.ProductId, request.Quantity);
+
         await _shopDbContext.Orders.AddAsync(order);
         await _shopDbContext.SaveChangesAsync();
     }
 
-    private Task<bool> IsProductExist(int id) =>
-        _shopDbContext.Products
+    private async Task<bool> IsProductExist(int id) =>
+        await _shopDbContext.Products
             .AnyAsync(x => x.Id == id);
+
+    private async Task<Product> GetProduct(int id) =>
+       await _shopDbContext.Products
+            .SingleAsync(x => x.Id == id);
+
+    private async Task DecreaseQuantity(int id, int quantity)
+    {
+        var product = await GetProduct(id);
+
+        if (quantity > product.Quantity)
+        {
+            throw new InvalidDataException("Request quantity bigger than are available!");
+        }
+
+        product.Quantity -= quantity;
+    }
 }
