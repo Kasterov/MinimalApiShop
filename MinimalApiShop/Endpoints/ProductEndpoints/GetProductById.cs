@@ -15,6 +15,6 @@ public static class GetProductById
             var product = await _productService.GetProductById(id);
 
             return Results.Ok(new ProductResponse(product));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }

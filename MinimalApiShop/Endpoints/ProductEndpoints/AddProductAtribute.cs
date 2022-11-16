@@ -21,6 +21,6 @@ public static class AddProductAtribute
                 await _productService.AddProductAtribute(id, request.Atribute);
 
                 return Results.Ok(new ResultResponse("Attribute is added!"));
-            }).WithTags("Shop");
+            }).WithTags("Product");
     }
 }

@@ -16,6 +16,6 @@ public static class GetProductsByCategory
             var products = await _productService.GetProductsByCategory(category);
 
             return Results.Ok(new ProductsResponse(products));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }

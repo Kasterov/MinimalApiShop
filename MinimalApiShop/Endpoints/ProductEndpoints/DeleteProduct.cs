@@ -16,6 +16,6 @@ public static class DeleteProduct
             await _productService.DeleteProduct(id);
 
             return Results.Ok(new ResultResponse($"Product with id: {id} deleted!!"));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }

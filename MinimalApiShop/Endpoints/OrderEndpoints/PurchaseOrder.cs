@@ -9,7 +9,7 @@ public static class PurchaseOrder
 {
     public static void PurchaseOrderEndpoint(this WebApplication app)
     {
-        app.MapPost("/api/Shop/orders/purchase", [Authorize(Roles = "User")] async (
+        app.MapPost("/api/Shop/orders", [Authorize(Roles = "User")] async (
             [FromServices] IOrderService orderService) =>
         {
             await orderService.PurchaseOrders();

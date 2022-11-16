@@ -19,6 +19,6 @@ public static class AddProduct
             await _validator.ValidateAndThrowAsync(request);
             await _productService.AddProduct(request);
             return Results.Ok(new ResultResponse("Product is added to DataBase!"));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }

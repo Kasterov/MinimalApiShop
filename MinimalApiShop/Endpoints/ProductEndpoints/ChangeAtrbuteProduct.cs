@@ -21,6 +21,6 @@ public static class ChangeAtrbuteProduct
             await _productService.ChangeProductAtribute(id, request.Atribute);
 
             return Results.Ok(new ResultResponse("Atribute is changed!"));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }

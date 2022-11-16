@@ -62,9 +62,18 @@ public class OrderService : IOrderService
         await shopDbContext.SaveChangesAsync();
     }
 
-    public Task ChangeOrder(OrderRequest request)
+    public async Task ChangeOrder(int productId, ChangeOrderQuantityRequest request)
     {
-        throw new NotImplementedException();
+        if (!await IsProductInOrder(productId))
+        {
+            throw new ArgumentOutOfRangeException("No product with such id in your order!");
+        }
+
+        var order = await GetOrderByProductId(productId);
+
+        order.Quantity = request.Quantity;
+
+        await shopDbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Order>> GetAllOrders()
@@ -101,14 +110,14 @@ public class OrderService : IOrderService
         await shopDbContext.SaveChangesAsync();
     }
 
-    private async Task<Order> GetOrderByProductId(int productId)
+    public async Task<Order> GetOrderByProductId(int productId)
     {
         return await shopDbContext.Orders
             .SingleAsync(x => x.ProductId == productId &&
             x.UserId == Convert.ToInt32(identityService.UserId));
     }
 
-    private async Task<bool> IsProductInOrder(int productId)
+    public async Task<bool> IsProductInOrder(int productId)
     {
         return await shopDbContext.Orders.AnyAsync(x => 
         x.ProductId == productId && x.UserId == Convert.ToInt32(identityService.UserId));

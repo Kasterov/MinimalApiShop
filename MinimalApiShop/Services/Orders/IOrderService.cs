@@ -7,7 +7,9 @@ public interface IOrderService
 {
     Task AddToOrders(OrderRequest request);
     Task DeleteFromOrder(int orderId);
-    Task ChangeOrder(OrderRequest request);
+    Task ChangeOrder(int productId, ChangeOrderQuantityRequest  request);
     Task PurchaseOrders();
     Task<IEnumerable<Order>> GetAllOrders();
+    Task<Order> GetOrderByProductId(int productId); 
+    Task<bool> IsProductInOrder(int productId);
 }

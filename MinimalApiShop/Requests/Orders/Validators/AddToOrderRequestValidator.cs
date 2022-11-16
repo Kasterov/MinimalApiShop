@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MinimalApiShop.Requests.Orders;
 
-namespace MinimalApiShop.Requests.Products.Validators;
+namespace MinimalApiShop.Requests.Orders.Validators;
 
 public class AddToOrderRequestValidator : AbstractValidator<OrderRequest>
 {

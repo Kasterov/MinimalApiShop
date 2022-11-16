@@ -21,6 +21,6 @@ public static class ChangeQuantityProduct
             await _productService.AddQuantityProduct(id, request.Quantity);
 
             return Results.Ok(new ResultResponse("Quantity is changed!"));
-        }).WithTags("Shop");
+        }).WithTags("Product");
     }
 }
