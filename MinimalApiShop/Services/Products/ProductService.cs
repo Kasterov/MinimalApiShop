@@ -7,12 +7,18 @@ namespace MinimalApiShop.Services.Products;
 
 public class ProductService : IProductService
 {
+    /// <summary>
+    /// Implement context of our DB
+    /// </summary>
     private readonly InternetShopContext _shopDbContext;
     public ProductService(InternetShopContext shopDbContext)
     {
         _shopDbContext = shopDbContext;
     }
 
+    /// <summary>
+    /// Add new product to DB by special request record
+    /// </summary>
     public async Task AddProduct(ProductCreateRequest productRequest)
     {
         var product = new Product()
@@ -27,14 +33,12 @@ public class ProductService : IProductService
         await _shopDbContext.SaveChangesAsync();
     }
 
-    public async Task AddProductAtribute(int id, string atribute)
+    /// <summary>
+    /// Add atribute to existing product
+    /// </summary>
+    public async Task AddProductAtribute(int productId, string atribute)
     {
-        if (!await IsProductExist(id))
-        {
-            throw new ArgumentOutOfRangeException("No product with such id!");
-        }
-
-        var product = await GetProduct(id);
+        var product = await GetProductById(productId);
 
         if (product.Atribute != "")
         {
@@ -45,27 +49,20 @@ public class ProductService : IProductService
         await _shopDbContext.SaveChangesAsync();
     }
 
-    public async Task AddQuantityProduct(int id, int quantity)
+    /// <summary>
+    /// Add quantity to existing product
+    /// </summary>
+    public async Task AddQuantityProduct(int productId, int quantity)
     {
-        if (!await IsProductExist(id))
-        {
-            throw new ArgumentOutOfRangeException("No product with such id!");
-        }
-
-        var product = await GetProduct(id);
+        var product = await GetProductById(productId);
 
         product.Quantity = quantity;
         await _shopDbContext.SaveChangesAsync();
     }
 
-    public async Task ChangeProductAtribute(int id, string atribute)
+    public async Task ChangeProductAtribute(int productId, string atribute)
     {
-        if (!await IsProductExist(id))
-        {
-            throw new ArgumentOutOfRangeException("No product with such id!");
-        }
-
-        var product = await GetProduct(id);
+        var product = await GetProductById(productId);
 
         if (product.Atribute == "")
         {
@@ -77,27 +74,22 @@ public class ProductService : IProductService
         await _shopDbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteProduct(int id)
+    public async Task DeleteProduct(int productId)
     {
-        if (!await IsProductExist(id))
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
-        var product = await GetProduct(id);
+        var product = await GetProductById(productId);
 
         _shopDbContext.Products.Remove(product);
         await _shopDbContext.SaveChangesAsync();
     }
 
-    public async Task<Product> GetProductById(int id)
+    public async Task<Product> GetProductById(int productId)
     {
-        if (!await IsProductExist(id))
+        if (!await IsProductExist(productId))
         {
             throw new ArgumentOutOfRangeException("No product with such id!");
         }
 
-        return _shopDbContext.Products.Single(x => x.Id == id);
+        return await _shopDbContext.Products.SingleAsync(x => x.Id == productId);
     }
 
     public async Task<List<Product>> GetProductsByCategory(Category category)
@@ -123,11 +115,7 @@ public class ProductService : IProductService
         return products;
     }
 
-    private Task<bool> IsProductExist(int id) =>
-        _shopDbContext.Products
-            .AnyAsync(x => x.Id == id);
-
-    private Task<Product> GetProduct(int id) =>
-        _shopDbContext.Products
-            .SingleAsync(x => x.Id == id);
+    public async Task<bool> IsProductExist(int productId) =>
+       await _shopDbContext.Products
+            .AnyAsync(x => x.Id == productId);
 }

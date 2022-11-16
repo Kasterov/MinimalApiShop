@@ -6,10 +6,11 @@ namespace MinimalApiShop.Services.Products;
 public interface IProductService
 {
     Task AddProduct(ProductCreateRequest productCreateRequest);
-    Task DeleteProduct(int id);
-    Task AddQuantityProduct(int id, int quantity);
-    Task ChangeProductAtribute(int id, string atribute);
-    Task AddProductAtribute(int id, string atribute);
+    Task DeleteProduct(int productId);
+    Task AddQuantityProduct(int prouductId, int quantity);
+    Task ChangeProductAtribute(int productId, string atribute);
+    Task AddProductAtribute(int productId, string atribute);
     Task<List<Product>> GetProductsByCategory(Category category);
-    Task<Product> GetProductById(int id);
+    Task<Product> GetProductById(int productId);
+    Task<bool> IsProductExist(int productId);
 }

@@ -3,23 +3,30 @@ using MinimalApiShop.Data;
 using MinimalApiShop.Models.Orders;
 using MinimalApiShop.Models.Products;
 using MinimalApiShop.Requests.Orders;
+using MinimalApiShop.Services.Products;
 using MinimalApiShop.Services.Users;
 
 namespace MinimalApiShop.Services.Orders;
 
 public class OrderService : IOrderService
 {
-    private readonly InternetShopContext _shopDbContext;
-    private readonly IIdentity _identity;
-    public OrderService(InternetShopContext context, IIdentity identity)
+    private readonly InternetShopContext shopDbContext;
+    private readonly IIdentity identityService;
+    private readonly IProductService productService;
+    public OrderService(
+        InternetShopContext context,
+        IIdentity identityService,
+        IProductService productService)
     {
-        _shopDbContext = context;
-        _identity = identity;
+
+        shopDbContext = context;
+        this.identityService = identityService;
+        this.productService = productService;
     }
 
     public async Task AddToOrders(OrderRequest request)
     {
-        if (!await IsProductExist(request.ProductId))
+        if (!await productService.IsProductExist(request.ProductId))
         {
             throw new ArgumentOutOfRangeException("No product with such id!");
         }
@@ -29,7 +36,7 @@ public class OrderService : IOrderService
             throw new InvalidDataException("Such order already created! You can delete it or change!");
         }
 
-        int userId = Convert.ToInt32(_identity.UserId);
+        int userId = Convert.ToInt32(identityService.UserId);
 
         var order = new Order
         {
@@ -38,8 +45,8 @@ public class OrderService : IOrderService
             Quantity = request.Quantity
         };
 
-        await _shopDbContext.Orders.AddAsync(order);
-        await _shopDbContext.SaveChangesAsync();
+        await shopDbContext.Orders.AddAsync(order);
+        await shopDbContext.SaveChangesAsync();
     }
 
     public async Task DeleteFromOrder(int productId)
@@ -51,8 +58,8 @@ public class OrderService : IOrderService
 
         var order = await GetOrderByProductId(productId);
 
-        _shopDbContext.Orders.Remove(order);
-        await _shopDbContext.SaveChangesAsync();
+        shopDbContext.Orders.Remove(order);
+        await shopDbContext.SaveChangesAsync();
     }
 
     public Task ChangeOrder(OrderRequest request)
@@ -62,8 +69,8 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<Order>> GetAllOrders()
     {
-        return await _shopDbContext.Orders.Where(x => 
-        x.UserId == Convert.ToInt32(_identity.UserId))
+        return await shopDbContext.Orders.Where(x => 
+        x.UserId == Convert.ToInt32(identityService.UserId))
         .ToListAsync();
     }
 
@@ -78,7 +85,7 @@ public class OrderService : IOrderService
 
         foreach (var order in orders)
         {
-            var productInOrder = await GetProduct(order.ProductId);
+            var productInOrder = await productService.GetProductById(order.ProductId);
 
             if (order.Quantity > productInOrder.Quantity)
             {
@@ -88,39 +95,19 @@ public class OrderService : IOrderService
             productInOrder.Quantity -= order.Quantity;
         }
 
-        _shopDbContext.Orders.RemoveRange(orders);
-        await _shopDbContext.SaveChangesAsync();
+        shopDbContext.Orders.RemoveRange(orders);
+        await shopDbContext.SaveChangesAsync();
     }
-
-    private async Task<bool> IsProductExist(int id) =>
-        await _shopDbContext.Products
-            .AnyAsync(x => x.Id == id);
-
-    private async Task<Product> GetProduct(int id) =>
-       await _shopDbContext.Products
-            .SingleAsync(x => x.Id == id);
 
     private async Task<Order?> GetOrderByProductId(int id)
     {
-        return await _shopDbContext.Orders
-            .FirstOrDefaultAsync(x => x.ProductId == id && x.UserId == Convert.ToInt32(_identity.UserId));
-    }
-
-    private async Task DecreaseQuantity(int id, int quantity)
-    {
-        var product = await GetProduct(id);
-
-        if (quantity > product.Quantity)
-        {
-            throw new InvalidDataException("Request quantity bigger than are available!");
-        }
-
-        product.Quantity -= quantity;
+        return await shopDbContext.Orders
+            .SingleAsync(x => x.ProductId == id && x.UserId == Convert.ToInt32(identityService.UserId));
     }
 
     private async Task<bool> IsProductInOrder(int id)
     {
-        return await _shopDbContext.Orders.AnyAsync(x => 
-        x.ProductId == id && x.UserId == Convert.ToInt32(_identity.UserId));
+        return await shopDbContext.Orders.AnyAsync(x => 
+        x.ProductId == id && x.UserId == Convert.ToInt32(identityService.UserId));
     }
 }
