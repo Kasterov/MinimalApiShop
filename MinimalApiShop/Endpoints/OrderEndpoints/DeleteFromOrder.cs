@@ -10,10 +10,10 @@ public static class DeleteFromOrder
     public static void DeleteFromOrderEndpoint(this WebApplication app)
     {
         app.MapDelete("api/Shop/order/{id}", [Authorize(Roles = "User")] async
-            ([FromServices] IOrderService _orderService,
+            ([FromServices] IOrderService orderService,
             [FromRoute]int id) =>
         {
-            await _orderService.DeleteFromOrder(id);
+            await orderService.DeleteFromOrder(id);
             return Results.Ok(new ResultResponse($"You order with id {id} deleted from list of orders!"));
         }).WithTags("Order");
     }

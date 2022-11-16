@@ -11,7 +11,7 @@ public static class AddProductAtribute
 {
     public static void AddProductAtributeEndpoint(this WebApplication app)
     {
-        app.MapPost("/api/Shop/product/{id}/attribute", [Authorize(Roles = "Admin, User")] async
+        app.MapPost("/api/Shop/product/{id}/attribute", [Authorize(Roles = "Admin, UserTrader")] async
             ([FromServices] IProductService _productService,
             [FromServices] IValidator<ProductAddAtributeRequest> _validator,
             [FromBody] ProductAddAtributeRequest request,

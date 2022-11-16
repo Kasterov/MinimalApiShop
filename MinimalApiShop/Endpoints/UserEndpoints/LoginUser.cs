@@ -9,10 +9,10 @@ public static class LoginUser
     public static void LoginUserEndpoint(this WebApplication app)
     {
         app.MapPost("/api/user/login", async
-        ([FromServices] IUserService _userService,
+        ([FromServices] IUserService userService,
         UserRequest request) =>
         {
-            return await _userService.Login(request);
+            return await userService.Login(request);
         }).WithTags("User");
     }
 }

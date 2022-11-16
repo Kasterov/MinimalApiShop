@@ -11,7 +11,7 @@ public static class ChangeAtrbuteProduct
 {
     public static void ChangeAtributeProductEndpoint(this WebApplication app)
     {
-        app.MapPut("/api/Shop/product/{id}/attribute", [Authorize(Roles = "Admin, User")] async
+        app.MapPut("/api/Shop/product/{id}/attribute", [Authorize(Roles = "Admin, UserTrader")] async
             ([FromServices] IProductService _productService,
             [FromServices] IValidator<ProductChangeAtributeRequest> _validator,
             [FromRoute] int id,

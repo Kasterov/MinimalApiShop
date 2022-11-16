@@ -8,7 +8,7 @@ public static class GetProductById
 {
     public static void GetProductByIdEndpoint(this WebApplication app)
     {
-        app.MapGet("/api/Shop/products/{id}", async
+        app.MapGet("/api/Shop/products/{id}", [AllowAnonymus] async
             ([FromServices] IProductService _productService,
             [FromRoute] int id) =>
         {

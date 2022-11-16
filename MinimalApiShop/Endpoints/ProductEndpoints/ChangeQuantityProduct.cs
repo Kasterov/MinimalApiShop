@@ -11,7 +11,7 @@ public static class ChangeQuantityProduct
 {
     public static void ChangeQuantityProductEndpont(this WebApplication app)
     {
-        app.MapPost("/apiShop/products/{id}/quantity", [Authorize(Roles = "Admin, User")] async
+        app.MapPost("/apiShop/products/{id}/quantity", [Authorize(Roles = "Admin, UserTrader")] async
            ([FromServices] IProductService _productService,
            [FromServices] IValidator<ProductAddQuantityRequest> _validator,
            [FromRoute] int id,

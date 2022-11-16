@@ -10,10 +10,10 @@ public static class AddUser
     public static void AddUserEndpoint(this WebApplication app)
     {
         app.MapPost("/api/user", async
-        ([FromServices] IUserService _userService,
+        ([FromServices] IUserService userService,
         UserRequest request) =>
         {
-            await _userService.Registration(request);
+            await userService.Registration(request);
             return Results.Ok(new UserResponse("User registered!"));
         }).WithTags("User");
     }

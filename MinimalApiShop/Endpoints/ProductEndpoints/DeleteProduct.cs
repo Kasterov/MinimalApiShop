@@ -9,7 +9,7 @@ public static class DeleteProduct
 {
     public static void DeleteProductEndpoint(this WebApplication app)
     {
-        app.MapDelete("/api/Shop/products/{id}", [Authorize(Roles = "Admin")] async
+        app.MapDelete("/api/Shop/products/{id}", [Authorize(Roles = "Admin, UserTrader")] async
             ([FromServices] IProductService _productService,
             [FromRoute] int id) =>
         {

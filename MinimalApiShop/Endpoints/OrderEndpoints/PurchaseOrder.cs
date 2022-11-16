@@ -13,7 +13,7 @@ public static class PurchaseOrder
             [FromServices] IOrderService orderService) =>
         {
             await orderService.PurchaseOrders();
-            return Results.Ok(new ResultResponse("You porchase all your orders!"));
+            return Results.Ok(new ResultResponse("You purchase all your orders!"));
         }).WithTags("Order");
     }
 }
