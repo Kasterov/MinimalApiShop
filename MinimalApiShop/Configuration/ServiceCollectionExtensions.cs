@@ -19,6 +19,6 @@ public static class ServiceCollectionExtensions
                .AddScoped<IVerifyPasswordService, VerifyPasswordService>()
                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                .AddSingleton<IIdentity, UserIdentity>()
-               .AddSingleton<IOrderService, OrderService>();
+               .AddScoped<IOrderService, OrderService>();
     }
 }

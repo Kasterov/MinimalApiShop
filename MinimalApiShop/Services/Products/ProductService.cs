@@ -10,10 +10,10 @@ public class ProductService : IProductService
     /// <summary>
     /// Implement context of our DB
     /// </summary>
-    private readonly InternetShopContext _shopDbContext;
-    public ProductService(InternetShopContext shopDbContext)
+    private readonly InternetShopContext shopDbContext;
+    public ProductService(InternetShopContext context)
     {
-        _shopDbContext = shopDbContext;
+        shopDbContext = context;
     }
 
     /// <summary>
@@ -29,12 +29,12 @@ public class ProductService : IProductService
             Atribute = productRequest.Atribute
         };
 
-        await _shopDbContext.Products.AddAsync(product);
-        await _shopDbContext.SaveChangesAsync();
+        await shopDbContext.Products.AddAsync(product);
+        await shopDbContext.SaveChangesAsync();
     }
 
     /// <summary>
-    /// Add atribute to existing product
+    /// Add atribute to existing product from DB
     /// </summary>
     public async Task AddProductAtribute(int productId, string atribute)
     {
@@ -46,20 +46,23 @@ public class ProductService : IProductService
         }
 
         product.Atribute = atribute;
-        await _shopDbContext.SaveChangesAsync();
+        await shopDbContext.SaveChangesAsync();
     }
 
     /// <summary>
-    /// Add quantity to existing product
+    /// Add quantity to existing product from DB
     /// </summary>
     public async Task AddQuantityProduct(int productId, int quantity)
     {
         var product = await GetProductById(productId);
 
         product.Quantity = quantity;
-        await _shopDbContext.SaveChangesAsync();
+        await shopDbContext.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Change atribute of existing product from DB
+    /// </summary>
     public async Task ChangeProductAtribute(int productId, string atribute)
     {
         var product = await GetProductById(productId);
@@ -71,17 +74,23 @@ public class ProductService : IProductService
 
         product.Atribute = atribute;
 
-        await _shopDbContext.SaveChangesAsync();
+        await shopDbContext.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Delete existing product from DB
+    /// </summary>
     public async Task DeleteProduct(int productId)
     {
         var product = await GetProductById(productId);
 
-        _shopDbContext.Products.Remove(product);
-        await _shopDbContext.SaveChangesAsync();
+        shopDbContext.Products.Remove(product);
+        await shopDbContext.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Return product from DB by id
+    /// </summary>
     public async Task<Product> GetProductById(int productId)
     {
         if (!await IsProductExist(productId))
@@ -89,13 +98,16 @@ public class ProductService : IProductService
             throw new ArgumentOutOfRangeException("No product with such id!");
         }
 
-        return await _shopDbContext.Products.SingleAsync(x => x.Id == productId);
+        return await shopDbContext.Products.SingleAsync(x => x.Id == productId);
     }
 
-    public async Task<List<Product>> GetProductsByCategory(Category category)
+    /// <summary>
+    /// Return a list of products from DB by category
+    /// </summary>
+    public async Task<IEnumerable<Product>> GetProductsByCategory(Category category)
     {
         var products =
-            await _shopDbContext.Products
+            await shopDbContext.Products
             .Where(x => x.Category == category)
             .Select(x => new Product
             {
@@ -107,7 +119,7 @@ public class ProductService : IProductService
             })
             .ToListAsync();
 
-        if (products.Count == 0)
+        if (!products.Any())
         {
             throw new ArgumentOutOfRangeException("No product with such category!");
         }
@@ -115,7 +127,10 @@ public class ProductService : IProductService
         return products;
     }
 
+    /// <summary>
+    /// Return true if product exist in DB and false if is not
+    /// </summary>
     public async Task<bool> IsProductExist(int productId) =>
-       await _shopDbContext.Products
+       await shopDbContext.Products
             .AnyAsync(x => x.Id == productId);
 }

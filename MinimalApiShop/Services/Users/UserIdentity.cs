@@ -5,10 +5,10 @@ namespace MinimalApiShop.Services.Users;
 
 public class UserIdentity : IIdentity
 {
-    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IHttpContextAccessor contextAccessor;
     public UserIdentity(IHttpContextAccessor contextAccessor)
     {
-        _contextAccessor = contextAccessor;
+        this.contextAccessor = contextAccessor;
     }
-    public string UserId => _contextAccessor.HttpContext!.User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+    public string UserId => contextAccessor.HttpContext!.User.FindFirstValue(JwtRegisteredClaimNames.Sid);
 }

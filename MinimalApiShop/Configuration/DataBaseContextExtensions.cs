@@ -9,6 +9,6 @@ public static class DataBaseContextExtensions
     {
         services.AddDbContext<InternetShopContext>(opt => opt
             .UseSqlServer(builder.Configuration
-            .GetConnectionString("DefualtConnection")), ServiceLifetime.Singleton);
+            .GetConnectionString("DefualtConnection")));
     }
 }

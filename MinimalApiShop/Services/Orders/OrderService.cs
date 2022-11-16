@@ -85,11 +85,13 @@ public class OrderService : IOrderService
 
         foreach (var order in orders)
         {
-            var productInOrder = await productService.GetProductById(order.ProductId);
+            var productInOrder = await productService
+                .GetProductById(order.ProductId);
 
             if (order.Quantity > productInOrder.Quantity)
             {
-                throw new InvalidOperationException($"Amount of {productInOrder.Name} with id  {productInOrder.Id} is lesser than you required!");
+                throw new InvalidOperationException(
+                    $"Quantity of product with id {productInOrder.Id} is lesser than you required!");
             }
 
             productInOrder.Quantity -= order.Quantity;
@@ -99,15 +101,16 @@ public class OrderService : IOrderService
         await shopDbContext.SaveChangesAsync();
     }
 
-    private async Task<Order?> GetOrderByProductId(int id)
+    private async Task<Order> GetOrderByProductId(int productId)
     {
         return await shopDbContext.Orders
-            .SingleAsync(x => x.ProductId == id && x.UserId == Convert.ToInt32(identityService.UserId));
+            .SingleAsync(x => x.ProductId == productId &&
+            x.UserId == Convert.ToInt32(identityService.UserId));
     }
 
-    private async Task<bool> IsProductInOrder(int id)
+    private async Task<bool> IsProductInOrder(int productId)
     {
         return await shopDbContext.Orders.AnyAsync(x => 
-        x.ProductId == id && x.UserId == Convert.ToInt32(identityService.UserId));
+        x.ProductId == productId && x.UserId == Convert.ToInt32(identityService.UserId));
     }
 }

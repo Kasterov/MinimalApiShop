@@ -2,26 +2,24 @@
 using MinimalApiShop.Data;
 using MinimalApiShop.Models.Users;
 using MinimalApiShop.Requests.Users;
-using System;
-using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace MinimalApiShop.Services.Users;
 
 public class UserService : IUserService
 {
-    private readonly IJwtGenerator _jwtGenerator;
-    private readonly InternetShopContext _shopContext;
-    private readonly IVerifyPasswordService _verifyPasswordService;
+    private readonly InternetShopContext shopDbContext;
+    private readonly IJwtGenerator jwtGenerator;
+    private readonly IVerifyPasswordService verifyPasswordService;
 
     public UserService(
-        InternetShopContext shopContext,
+        InternetShopContext context,
         IJwtGenerator jwtGenerator,
         IVerifyPasswordService verifyPasswordService)
     {
-        _shopContext = shopContext;
-        _jwtGenerator = jwtGenerator;
-        _verifyPasswordService = verifyPasswordService;
+        shopDbContext = context;
+        this.jwtGenerator = jwtGenerator;
+        this.verifyPasswordService = verifyPasswordService;
     }
 
     public async Task Registration(UserRequest request)
@@ -41,13 +39,13 @@ public class UserService : IUserService
             Role = UserRole.User
         };
 
-        await _shopContext.Users.AddAsync(user);
-        await _shopContext.SaveChangesAsync();
+        await shopDbContext.Users.AddAsync(user);
+        await shopDbContext.SaveChangesAsync();
     }
 
     public async Task<string> Login(UserRequest request)
     {
-        var user = await _shopContext.Users
+        var user = await shopDbContext.Users
             .FirstOrDefaultAsync(x => x.Name == request.Name);
 
         if (user is null)
@@ -55,12 +53,12 @@ public class UserService : IUserService
             throw new InvalidDataException("No user with such name!");
         }
 
-        if (!_verifyPasswordService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+        if (!verifyPasswordService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
         {
             throw new InvalidDataException("Wrong password!");
         }
 
-        return _jwtGenerator.GenerateJwtToken(user);
+        return jwtGenerator.GenerateJwtToken(user);
     }
 
     private void GeneratePasswordHash(string password,out byte[] passwordHash,out byte[] passwordSalt)
@@ -74,7 +72,7 @@ public class UserService : IUserService
 
     private async Task<bool> IsUserExist(string name)
     {
-        if (await _shopContext.Users.AnyAsync(x => x.Name == name))
+        if (await shopDbContext.Users.AnyAsync(x => x.Name == name))
         {
             return true;
         }
